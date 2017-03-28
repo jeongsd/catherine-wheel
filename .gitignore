@@ -1,0 +1,8 @@
+
+# compile
+build
+
+# npm
+node_modules
+npm-debug.log
+npm-debug.log.*

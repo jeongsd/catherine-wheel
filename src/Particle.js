@@ -15,15 +15,15 @@ class Particle {
 
   constructor(initValues) {
     const {
-      position = new Vector(0, 0, 0),
-      velocity = new Vector(0, 0, 0),
-      acceleration = new Vector(0, 0, 0),
+      position = new Vector([0, 0, 0]),
+      velocity = new Vector([0, 0, 0]),
+      acceleration = new Vector([0, 0, 0]),
       damping = 1,
       inverseMass = 1,
       mass = 1,
-      forceAccum = new Vector(0, 0, 0),
+      forceAccum = new Vector([0, 0, 0]),
     } = initValues;
-
+    // console.log('???', velocity.data);
     this.position = position;
     this.velocity = velocity;
     this.acceleration = acceleration;
@@ -37,20 +37,18 @@ class Particle {
     if (this.inverseMass <= 0.0) {
       return this;
     }
-    invariant(duration > 0.0, 'duration must bigger then 0.0');
-
+    // console.log(this.position.data);
     this.position.add(Vector.scale(this.velocity, duration));
 
-    const resultingAcc = new Vector(...this.acceleration.toArray());
+    const resultingAcc = new Vector([...this.acceleration.data]);
     resultingAcc.add(Vector.scale(this.forceAccum, this.inverseMass));
-
 
     this.velocity
       .add(Vector.scale(resultingAcc, duration))
       .scale(Math.pow(this.damping, duration));
 
     this.clearAccumulator();
-
+    // console.log(this.position.data);
     return this;
   }
 
@@ -79,7 +77,7 @@ class Particle {
   setMass(mass) {
     this.inverseMass = 1 / mass;
     return this;
-  // }
+  }
   //
   // static getGForceBetweenMasses(p1, p2) {
   //   return Math.sqrt(

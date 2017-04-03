@@ -1,18 +1,33 @@
 import anime from 'animejs';
-import catherinWheel from './catherineWheel';
+import _ from 'lodash';
+import CatherineWheel from './CatherineWheel';
 import './main.css';
-const { animateParticules, render, setCanvasSize } = catherinWheel();
 
-var centerX = window.innerWidth / 2;
-var centerY = window.innerHeight / 2;
+var canvasEl = document.querySelector('.fireworks');
+canvasEl.width = window.innerWidth;
+canvasEl.height = window.innerHeight;
+// canvasEl.style.width = window.innerWidth + 'px';
+// canvasEl.style.height = window.innerHeight + 'px';
+// canvasEl.getContext('2d').scale(2, 2);
 
-animateParticules(
-  anime.random(centerX-50, centerX+50),
-  anime.random(centerY-50, centerY+50)
-);
+const catherineWheel = new CatherineWheel({
+  canvasEl,
+});
+// catherineWheel.fire();
+// _.range(1).map(() => {
+//   catherineWheel.fire();
+// })
+// catherineWheel.animateFireWork();
+// var render = anime({
+//   duration: Infinity,
+//   update: function() {
+//     this.ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+//   }
+// });
 
-window.addEventListener('load', function() {
-  render.play();
-
-  setCanvasSize();
-}, false);
+function autoClick() {
+  catherineWheel.fire();
+  // catherineWheel.animateFireWork();
+  // anime({ duration: 1 }).finished.then(autoClick);
+}
+autoClick();

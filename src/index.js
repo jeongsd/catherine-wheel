@@ -26,8 +26,11 @@ const catherineWheel = new CatherineWheel({
 // });
 
 function autoClick() {
-  catherineWheel.fire();
+  catherineWheel.fire().fire();
+  catherineWheel.deg += 5;
   // catherineWheel.animateFireWork();
-  // anime({ duration: 1 }).finished.then(autoClick);
+  anime({ duration: 16 }).finished.then(autoClick);
+  // requestAnimationFrame(autoClick);
 }
 autoClick();
+// 1000 /6

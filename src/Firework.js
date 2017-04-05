@@ -6,14 +6,12 @@ class Firework extends Particle {
     const {
       type,
       age,
-      id,
       ...other
     } = props;
 
     super(other);
     this.type = type;
     this.age = age;
-    this.id = id;
   }
 
   update(duration) {

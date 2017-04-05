@@ -23,7 +23,7 @@ class Particle {
       mass = 1,
       forceAccum = new Vector([0, 0, 0]),
     } = initValues;
-    // console.log('???', velocity.data);
+
     this.position = position;
     this.velocity = velocity;
     this.acceleration = acceleration;

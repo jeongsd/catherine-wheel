@@ -44,12 +44,11 @@ class FireworkRule {
     this.payloads = payloads;
   }
 
-  create(parent, id, fireDirection) {
+  create({ parent, fireDirection }) {
     const firework = new Firework({
       type: this.type,
       age: random(this.minAge, this.maxAge),
       position: new Vector([parent.position.x, parent.position.y, parent.position.z]),
-      id,
     });
 
     // firework.position = ;

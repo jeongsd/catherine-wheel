@@ -13,13 +13,14 @@ function crossProduct(u, v) {
   ]);
 }
 
+const Z_AXIS = new Vector([0, 0, 1]);
 
 const rule = new FireworkRule({
   type: 1,
   minAge: 1.5,
   maxAge: 2.5,
   minVelocity: new Vector([0, 0, 0]),
-  maxVelocity: new Vector([200, 122, 0]),
+  maxVelocity: new Vector([1000, 1000, 0]),
   damping: 0.1,
   payloads: [
     new Payload({ type: 3, count: 4 }),
@@ -37,12 +38,10 @@ class CatherineWheel {
     const {
       deg = INIT_DEG,
       radius = INIT_RADIUS,
-      firePosition = new Vector([INIT_RADIUS * Math.cos(INIT_DEG), INIT_RADIUS * Math.sin(INIT_DEG), 0]),
       canvasEl,
     } = props;
 
     this.radius = radius;
-    this.firePosition = firePosition;
     this.deg = deg;
     this.ctx = canvasEl.getContext('2d');
     this.canvasEl = canvasEl;
@@ -51,68 +50,57 @@ class CatherineWheel {
   }
 
   fire() {
-    const {
-      canvasEl,
-      firePosition,
-      radius,
-    } = this;
+    const deg = this.deg + anime.random(-5, 5);
 
-    const radian = this.deg * Math.PI / 180;
-    firePosition.x = radius * Math.cos(radian);
-    firePosition.y = radius * Math.sin(radian);
+    const radian = deg * Math.PI / 180;
+    const firePosition = new Vector([this.radius * Math.cos(radian), this.radius * Math.sin(radian), 0]);
+    const firework = rule.create({
+      parent: new Particle({ position: firePosition }),
+      fireDirection: crossProduct(Vector.normalize(firePosition), Z_AXIS),
+    });
+
+
+    // this.deg++;
 
     const id = uuidV1();
-    const fireDirection = crossProduct(Vector.normalize(firePosition), new Vector([0, 0, 1]));
-    const firework = rule.create(new Particle({ position: new Vector([...firePosition.data]) }), id, fireDirection);
-    firework.onExpired = this.onFireExpire;
-
-    this.deg++;
     store[id] = {
       x: firework.position.x,
       y: firework.position.y,
     };
 
-    const keyframes = {
+    const animation = {
       targets: store[id],
       update: this.renderParticule,
-      complete: () => {
-        delete store[id];
-      },
-      x: [],
-      y: [],
+      easing: 'easeInOutQuad',
     };
-    console.log(store[id]);
+
     const age = firework.age;
     firework.update(firework.age);
-    keyframes.x.push({ value: firework.position.x, duration: age * 1000 });
-    keyframes.y.push({ value: firework.position.y, duration: age * 1000 });
-    // for (var duration = 0; firework.age > 0; duration += 500) {
-    //   firework.update(firework.age);
-    //   keyframes.x.push({ value: firework.position.x, duration: age * 1000 });
-    //   keyframes.y.push({ value: firework.position.y, duration: age * 1000 });
-    // }
-    console.log(keyframes);
-    anime.timeline()
-      .add(keyframes);
+    animation.x = firework.position.x;
+    animation.y = firework.position.y;
+    animation.duration = age * 1000;
+
+    anime(animation).finished
+      .then(() => {
+        delete store[id];
+      });
 
     return this;
   }
 
   onFireExpire(type, id) {
-    // console.log('onFireExpire');
+
     // delete test;
   }
 
   renderParticule(anim) {
     this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
     const keys = Object.keys(store);
-
+    // console.log(keys.length);
     for (var i = 0; i < keys.length; i++) {
       const firework = store[keys[i]];
-      // console.log(firework.x, firework.y);
-      // console.log(this.canvasEl.width / 2 + firework.x * 1, this.canvasEl.height / 2 + firework.y * 1);
       this.ctx.beginPath();
-      this.ctx.arc(this.canvasEl.width / 2 + firework.x * 1, this.canvasEl.height / 2 + firework.y * 1, 10, 0, 2 * Math.PI, true);
+      this.ctx.arc(this.canvasEl.width / 2 + firework.x * 1, this.canvasEl.height / 2 + firework.y * 1, 3, 0, 2 * Math.PI, true);
       this.ctx.fillStyle = '#FF1461';
       this.ctx.fill();
     }

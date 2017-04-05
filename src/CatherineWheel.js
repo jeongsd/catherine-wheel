@@ -59,28 +59,30 @@ class CatherineWheel {
       fireDirection: crossProduct(Vector.normalize(firePosition), Z_AXIS),
     });
 
-
-    // this.deg++;
-
     const id = uuidV1();
     store[id] = {
       x: firework.position.x,
       y: firework.position.y,
     };
 
-    const animation = {
+    const keyframe = {
       targets: store[id],
       update: this.renderParticule,
       easing: 'easeInOutQuad',
+      x: [],
+      y: [],
     };
 
     const age = firework.age;
-    firework.update(firework.age);
-    animation.x = firework.position.x;
-    animation.y = firework.position.y;
-    animation.duration = age * 1000;
+    const secDuration = 0.1;
 
-    anime(animation).finished
+    while (firework.age > 0) {
+      firework.update(secDuration);
+      keyframe.x.push({ value: firework.position.x, duration: secDuration * 1000 });
+      keyframe.y.push({ value: firework.position.y, duration: secDuration * 1000 });
+    }
+
+    anime(keyframe).finished
       .then(() => {
         delete store[id];
       });
@@ -96,7 +98,7 @@ class CatherineWheel {
   renderParticule(anim) {
     this.ctx.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
     const keys = Object.keys(store);
-    // console.log(keys.length);
+
     for (var i = 0; i < keys.length; i++) {
       const firework = store[keys[i]];
       this.ctx.beginPath();

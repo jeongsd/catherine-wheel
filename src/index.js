@@ -26,7 +26,9 @@ const catherineWheel = new CatherineWheel({
 // });
 
 function autoClick() {
-  catherineWheel.fire().fire();
+  const parent = catherineWheel.getWheelPosition();
+  catherineWheel.fire({ parent, type: 1, isWheelFire: true })
+    // .fire({ parent, type: 1 });
   catherineWheel.deg += 5;
   // catherineWheel.animateFireWork();
   anime({ duration: 16 }).finished.then(autoClick);

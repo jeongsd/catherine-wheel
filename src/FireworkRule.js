@@ -51,20 +51,14 @@ class FireworkRule {
       position: new Vector([parent.position.x, parent.position.y, parent.position.z]),
     });
 
-    // firework.position = ;
-
     const velocity = new Vector([0, 0, 0]);
     velocity.add(parent.velocity);
     velocity.add(vectorRandom(this.minVelocity, this.maxVelocity));
     firework.velocity = new Vector([velocity.x, velocity.y, velocity.z]);
-    // console.log(firework.velocity.x);
-    // console.log(firework.velocity.y);
-    // console.log(firework.velocity.z);
-    firework.velocity = fireDirection.scale(-firework.velocity.magnitude());
-    // console.log(firework.velocity.data);
-    //
-    // a.magnitude();
-
+    if (fireDirection) {
+      firework.velocity = fireDirection.scale(-firework.velocity.magnitude());
+    }
+  
     firework.setMass(1);
     firework.setDamping(this.damping);
 
